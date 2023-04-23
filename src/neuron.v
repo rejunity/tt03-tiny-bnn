@@ -18,7 +18,7 @@ module neuron #(
     reg [INPUTS-1:0] weights;
     reg [BIAS_BITS-1:0] bias;
 
-    wire [ACCUMULATOR_BITS-1:0] accumulator;
+    reg [ACCUMULATOR_BITS-1:0] accumulator;
     integer i;
 
     // initial begin
@@ -64,93 +64,80 @@ module neuron #(
     //     // $display("a = ", accumulator);
     // end
 
-    // always @(inputs) begin
-    //     // synapses <= weights & inputs;
-    //     // $display("w = ", weights);
-    //     // $display("b = ", bias);
-    //     // $display("i = ", inputs);
-    //     // $display("t = ", synapses);
-    //     accumulator = 0;
-    //     for  (i = 0; i < INPUTS; i = i + 1)
-    //         accumulator = accumulator + (weights[i] & inputs[i]);
-    //     // $display("accumulator value = ", accumulator);
-    //     axon <= (accumulator > bias);
-    // end
+    always @(*) begin
+        // synapses <= weights & inputs;
+        // $display("w = ", weights);
+        // $display("b = ", bias);
+        // $display("i = ", inputs);
+        // $display("t = ", synapses);
+        accumulator = 0;
+        for  (i = 0; i < INPUTS; i = i + 1)
+            accumulator = accumulator + (weights[i] & inputs[i]);
+        // $display("accumulator value = ", accumulator);
+        if (USE_CHEAP_BIAS == 1)
+            axon <= |(accumulator & bias);
+        else
+            axon <= (accumulator > bias);
+    end
 
+    // function [1:0] enc2;
+    //     input [1:0] in;
+    //     begin
+    //         case (in)
+    //             2'b00: enc2 = 2'd0;
+    //             2'b01: enc2 = 2'd1;
+    //             2'b10: enc2 = 2'd1;
+    //             2'b11: enc2 = 2'd2;
+    //         endcase
+    //     end
+    // endfunction
 
-    function [1:0] enc2;
-        input [1:0] in;
-        begin
-            case (in)
-                2'b00: enc2 = 2'd0;
-                2'b01: enc2 = 2'd1;
-                2'b10: enc2 = 2'd1;
-                2'b11: enc2 = 2'd2;
-            endcase
-        end
-    endfunction
-
-    wire [7:0] synapses;
-    wire [1:0] count0;
-    wire [1:0] count1;
-    wire [1:0] count2;
-    wire [1:0] count3;
-    wire [2:0] count4;
-    wire [2:0] count5;
-    wire [3:0] count;
-    assign synapses = weights & inputs; 
+    // wire [7:0] synapses;
+    // wire [1:0] count0;
+    // wire [1:0] count1;
+    // wire [1:0] count2;
+    // wire [1:0] count3;
+    // wire [2:0] count4;
+    // wire [2:0] count5;
+    // wire [3:0] count;
+    // assign synapses = weights & inputs;
     // assign count0 = synapses[0] + synapses[1];
     // assign count1 = synapses[2] + synapses[3];
     // assign count2 = synapses[4] + synapses[5];
     // assign count3 = synapses[6] + synapses[7];
-    assign count0 = enc2(synapses[1:0]);
-    assign count1 = enc2(synapses[3:2]);
-    assign count2 = enc2(synapses[5:4]);
-    assign count3 = enc2(synapses[7:6]);
-    assign count4 = count0 + count1;
-    assign count5 = count2 + count3;
-    assign count  = count4 + count5;
+    // // assign count0 = enc2(synapses[1:0]);
+    // // assign count1 = enc2(synapses[3:2]);
+    // // assign count2 = enc2(synapses[5:4]);
+    // // assign count3 = enc2(synapses[7:6]);
+    // assign count4 = count0 + count1;
+    // assign count5 = count2 + count3;
+    // // assign count = enc2(synapses[1:0]) + enc2(synapses[3:2]) + enc2(synapses[5:4]) + enc2(synapses[7:6]);
+    // assign count = count4 + count5;
 
-    always @(*) begin
-        // reg [1:0] count0;
-        // reg [1:0] count1;
-        // reg [1:0] count2;
-        // reg [1:0] count3;
-        // reg [2:0] count4;
-        // reg [2:0] count5;
-        // reg [3:0] count;
-        // case (weights[1:0] & inputs[1:0])
-        //     2'b00: count0 = 2'd0;
-        //     2'b01: count0 = 2'd1;
-        //     2'b10: count0 = 2'd1;
-        //     2'b11: count0 = 2'd2;
-        // endcase
-        // case (weights[3:2] & inputs[3:2])
-        //     2'b00: count1 = 2'd0;
-        //     2'b01: count1 = 2'd1;
-        //     2'b10: count1 = 2'd1;
-        //     2'b11: count1 = 2'd2;
-        // endcase
-        // case (weights[5:4] & inputs[5:4])
-        //     2'b00: count2 = 2'd0;
-        //     2'b01: count2 = 2'd1;
-        //     2'b10: count2 = 2'd1;
-        //     2'b11: count2 = 2'd2;
-        // endcase
-        // case (weights[7:6] & inputs[7:6])
-        //     2'b00: count3 = 2'd0;
-        //     2'b01: count3 = 2'd1;
-        //     2'b10: count3 = 2'd1;
-        //     2'b11: count3 = 2'd2;
-        // endcase
+    // reg [7:0] synapses;
+    // reg [1:0] count0;
+    // reg [1:0] count1;
+    // reg [1:0] count2;
+    // reg [1:0] count3;
+    // reg [2:0] count4;
+    // reg [2:0] count5;
+    // reg [3:0] count;
 
-        // reg [3:0] count;
-        // count = count4 + count5;
+    // always @(inputs) begin
 
-        if (USE_CHEAP_BIAS == 1)
-            axon <= |(count & bias);
-        else
-            axon <= (count > bias);
-    end
+    //     synapses = weights & inputs;
+    //     count0 = synapses[0] + synapses[1];
+    //     count1 = synapses[2] + synapses[3];
+    //     count2 = synapses[4] + synapses[5];
+    //     count3 = synapses[6] + synapses[7];
+    //     count4 = count0 + count1;
+    //     count5 = count2 + count3;
+    //     count = count4 + count5;
+
+    //     if (USE_CHEAP_BIAS == 1)
+    //         axon <= |(count & bias);
+    //     else
+    //         axon <= (count > bias);
+    // end
 
 endmodule
