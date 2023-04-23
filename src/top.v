@@ -4,6 +4,9 @@ module tiny_bnn (
   input [7:0] io_in,
   output [7:0] io_out
 );
+    localparam GLOBAL_INPUTS = 8;
+    localparam GLOBAL_OUTPUTS = 8;
+    localparam HIDDEN_UNITS = 0;
     
     wire clk = io_in[0];
     wire setup = io_in[1];
@@ -22,9 +25,10 @@ module tiny_bnn (
     // assign io_out[7] = param_out;
 
 
-    reg [7:0] global_input;
-    wire [15:0] param_chain;
-    wire [15:0] global_output;
+    reg [GLOBAL_INPUTS-1:0] global_input;
+    wire [HIDDEN_UNITS-1:0] hidden;
+    wire [GLOBAL_OUTPUTS-1:0] global_output;
+    wire [HIDDEN_UNITS+GLOBAL_OUTPUTS-1:0] param_chain;
     
     always @(posedge clk) begin
         // during setup, reset global inputs to 0
@@ -50,17 +54,58 @@ module tiny_bnn (
     //     .inputs(global_input), .axon(led_out));
 
     genvar i;
+    // generate
+    //     for (i = 0; i < 16; i = i + 1) begin
+    //         wire p = (i == 0) ? param_in : param_chain[i - 1];
+
+    //         neuron input_layer (
+    //             .clk(clk), .setup(setup), .param_in(p), .param_out(param_chain[i]),
+    //             .inputs(global_input), .axon(global_output[i]));
+    //     end
+
+    //     for (i = 0; i < 8; i = i + 1) begin
+    //         assign io_out[i] = (setup && i == 7) ? param_chain[7] : global_output[i] | global_output[8+i];
+    //     end
+    // endgenerate
+
     generate
-        for (i = 0; i < 16; i = i + 1) begin
-            wire p = (i == 0) ? param_in : param_chain[i - 1];
+        // input layer
+        if (HIDDEN_UNITS == 0) begin
+            // just a single layer
+            for (i = 0; i < GLOBAL_OUTPUTS; i = i + 1) begin
+                wire p = (i == 0) ? param_in : param_chain[i - 1];
+                neuron #(.INPUTS(GLOBAL_INPUTS)) output_layer(
+                    .clk(clk), .setup(setup), .param_in(p), .param_out(param_chain[i]),
+                    .inputs(global_input), .axon(global_output[i]));
+            end
+        end else begin
+            for (i = 0; i < HIDDEN_UNITS; i = i + 1) begin
+                wire p = (i == 0) ? param_in : param_chain[i - 1];
 
-            neuron input_layer (
-                .clk(clk), .setup(setup), .param_in(p), .param_out(param_chain[i]),
-                .inputs(global_input), .axon(global_output[i]));
+                neuron #(.INPUTS(GLOBAL_INPUTS)) input_layer(
+                    .clk(clk), .setup(setup), .param_in(p), .param_out(param_chain[i]),
+                    .inputs(global_input), .axon(hidden[i]));
+            end
+
+            // output layer
+            for (i = 0; i < GLOBAL_OUTPUTS; i = i + 1) begin
+                neuron #(.INPUTS(HIDDEN_UNITS)) output_layer(
+                    .clk(clk), .setup(setup), .param_in(param_chain[HIDDEN_UNITS + i - 1]), .param_out(param_chain[HIDDEN_UNITS + i]),
+                    .inputs(hidden), .axon(global_output[i]));
+            end
         end
 
-        for (i = 0; i < 8; i = i + 1) begin
-            assign io_out[i] = (setup && i == 7) ? param_chain[7] : global_output[i] | global_output[8+i];
+        for (i = 0; i < GLOBAL_OUTPUTS; i = i + 1) begin
+            assign io_out[i] = (setup && i == GLOBAL_OUTPUTS - 1) ? param_chain[HIDDEN_UNITS+GLOBAL_OUTPUTS-1] : global_output[i];
         end
+
+        // for (i = 0; i < GLOBAL_OUTPUTS; i = i + 1) begin
+        //     assign io_out[i] = global_output[i];
+        // end
+
+        // for (i = 0; i < 8; i = i + 1) begin
+        //     assign io_out[i] = (setup && i == 7) ? param_chain[7] : global_output[i] | global_output[8+i];
+        // end
     endgenerate
+
 endmodule

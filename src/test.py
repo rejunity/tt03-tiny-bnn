@@ -26,10 +26,10 @@ async def test_7seg(dut):
     dut._log.info("setup")
     dut.setup.value = 1
 
-    for n in reversed(range(8)):
-        for i in reversed(range(3 + 8)):
-            dut.x.value = nth_bit(bias[n], 0);
-            await ClockCycles(dut.clk, 1)
+    # for n in reversed(range(8)):
+    #     for i in reversed(range(3 + 8)):
+    #         dut.x.value = nth_bit(bias[n], 0);
+    #         await ClockCycles(dut.clk, 1)
 
     for n in reversed(range(min(MAX_TEST_NEURONS, len(weights)))):
         for i in reversed(range(3)):
