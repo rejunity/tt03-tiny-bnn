@@ -1,7 +1,8 @@
 
 module neuron #(
     parameter INPUTS = 8,
-    parameter BIAS_BITS = 3
+    parameter BIAS_BITS = 3,
+    parameter USE_CHEAP_BIAS = 1
 ) (
     input clk,
     input wire setup,
@@ -113,7 +114,10 @@ module neuron #(
         count5 = count2 + count3;
         count = count4 + count5;
 
-        axon <= (count > bias);
+        if (USE_CHEAP_BIAS == 1)
+            axon <= |(count & bias);
+        else
+            axon <= (count > bias);
     end
 
 endmodule

@@ -3,9 +3,13 @@ from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
 
 TEST = 0
+USE_CHEAP_BIAS = True
 
 def neuron(id, x):
-    return bin(x & weights[id]).count("1") > bias[id];
+    if USE_CHEAP_BIAS:
+        return bin(bin(x & weights[id]).count("1") & bias[id]).count("1") > 0;
+    else:
+        return bin(x & weights[id]).count("1") > bias[id];
 
 if TEST == 0: # 1 layer
     MAX_TEST_OUTPUTS = 8
