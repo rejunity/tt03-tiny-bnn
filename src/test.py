@@ -2,7 +2,7 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
 
-TEST = 1
+TEST = 2
 
 def neuron(id, x):
     return bin(x & weights[id]).count("1") > bias[id];
@@ -42,6 +42,7 @@ elif TEST == 2: # 2 layers
         h = 0
         for n in reversed(range(HIDDEN_UNITS)):
             h = (h << 1) + neuron(n, x)
+        #print("{0:016b}".format(h), int(neuron(HIDDEN_UNITS+id, h)))
         return neuron(HIDDEN_UNITS+id, h)
 
 def nth_bit(x, n):

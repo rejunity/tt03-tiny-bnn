@@ -6,7 +6,7 @@ module tiny_bnn (
 );
     localparam GLOBAL_INPUTS = 8;
     localparam GLOBAL_OUTPUTS = 8;
-    localparam HIDDEN_UNITS = 8;
+    localparam HIDDEN_UNITS = 16;
     
     wire clk = io_in[0];
     wire setup = io_in[1];
@@ -37,6 +37,8 @@ module tiny_bnn (
         end else begin
             global_input[5:0] <= x;
         end
+
+        //$monitor("h %b", hidden);
     end
 
     // instantiate segment display
