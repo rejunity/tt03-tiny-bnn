@@ -64,7 +64,7 @@ module neuron #(
     //     // $display("a = ", accumulator);
     // end
 
-    always @(*) begin
+    always @(inputs) begin
         // synapses <= weights & inputs;
         // $display("w = ", weights);
         // $display("b = ", bias);
