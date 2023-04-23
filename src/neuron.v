@@ -42,8 +42,8 @@ module neuron #(
     always @(posedge clk) begin
         // if reset, set counter to 0
         if (setup) begin
-            bias <= {bias[BIAS_BITS-2:0], weights[INPUTS-1]};
-            weights <= {weights[INPUTS-2:0], param_in};
+            bias = {bias[BIAS_BITS-2:0], weights[INPUTS-1]};
+            weights = {weights[INPUTS-2:0], param_in};
             // $display(">> ", param_in);
             // $display("w = ", weights);
             // $display("b = ", bias);
