@@ -2,7 +2,7 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
 
-TEST = 0
+TEST = 2
 USE_CHEAP_BIAS = True
 
 def neuron(id, x):
@@ -35,6 +35,21 @@ elif TEST == 1: # 2 layers
         return neuron(HIDDEN_UNITS+id, h)
 
 elif TEST == 2: # 2 layers
+    HIDDEN_UNITS = 12
+    MAX_TEST_OUTPUTS = 8
+    MAX_NEURON_PARAMS_TO_UPLOAD = 12+8
+    weights = [0xff,0xff,0xff,0xff,0x55,0xAA,0x0F,0xC3,0xff,0xff,0xff,0xff,     0xfff,0xfff,0xfff,0xfff,0xfff,0xfff,0xfff,0xfff]
+    bias =    [   0,   1,   2,   7,   3,   3,   3,   3,   3,   4,   5,   6,         0,    1,    2,    3,    4,    5,    6,    7]
+    bits_w =  [   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,        12,   12,   12,   12,   12,   12,   12,   12]
+    bits_b =  [   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,         3,    3,    3,    3,    3,    3,    3,    3]
+    def output(id, x):
+        h = 0
+        for n in reversed(range(HIDDEN_UNITS)):
+            h = (h << 1) + neuron(n, x)
+        #print("{0:016b}".format(h), int(neuron(HIDDEN_UNITS+id, h)))
+        return neuron(HIDDEN_UNITS+id, h)
+
+elif TEST == 3: # 2 layers
     HIDDEN_UNITS = 16
     MAX_TEST_OUTPUTS = 8
     MAX_NEURON_PARAMS_TO_UPLOAD = 16+8
