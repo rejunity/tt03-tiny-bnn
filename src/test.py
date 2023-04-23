@@ -2,7 +2,7 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
 
-TEST = 2
+TEST = 0
 
 def neuron(id, x):
     return bin(x & weights[id]).count("1") > bias[id];

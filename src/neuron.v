@@ -12,12 +12,12 @@ module neuron #(
     output reg axon
 );
 
-    localparam ACCUMULATOR_BITS = $clog2(INPUTS);
+    localparam ACCUMULATOR_BITS = $clog2(INPUTS) + 1;
 
     reg [INPUTS-1:0] weights;
     reg [BIAS_BITS-1:0] bias;
 
-    reg [ACCUMULATOR_BITS:0] accumulator;
+    wire [ACCUMULATOR_BITS-1:0] accumulator;
     integer i;
 
     // initial begin
@@ -49,17 +49,30 @@ module neuron #(
         end
     end
 
-    always @(inputs) begin
-        //temp <= weights & inputs;
-        // $display("w = ", weights);
-        // $display("b = ", bias);
-        // $display("i = ", inputs);
-        // $display("t = ", temp);
-        accumulator = 0;
-        for  (i = 0; i < INPUTS; i = i + 1)
-            accumulator = accumulator + (weights[i] & inputs[i]);
-        // $display("accumulator value = ", accumulator);
+    wire [INPUTS-1:0] synapses;
+    assign synapses = weights & inputs;
+    popcount #(.INPUTS(8), .COUNTER_BITS(ACCUMULATOR_BITS)) spike_counter(.in(synapses), .count(accumulator));
+
+    always @(*) begin
         axon <= (accumulator > bias);
+        // $display("w = ", weights);
+        // $display("i = ", inputs);
+        // $display("s = ", synapses);
+        // $display("b = ", bias);
+        // $display("a = ", accumulator);
     end
+
+    // always @(inputs) begin
+    //     // synapses <= weights & inputs;
+    //     // $display("w = ", weights);
+    //     // $display("b = ", bias);
+    //     // $display("i = ", inputs);
+    //     // $display("t = ", synapses);
+    //     accumulator = 0;
+    //     for  (i = 0; i < INPUTS; i = i + 1)
+    //         accumulator = accumulator + (weights[i] & inputs[i]);
+    //     // $display("accumulator value = ", accumulator);
+    //     axon <= (accumulator > bias);
+    // end
 
 endmodule
