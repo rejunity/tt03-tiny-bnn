@@ -77,6 +77,19 @@ module neuron #(
     //     axon <= (accumulator > bias);
     // end
 
+
+    function [1:0] enc2;
+        input [1:0] in;
+        begin
+            case (in)
+                2'b00: enc2 = 2'd0;
+                2'b01: enc2 = 2'd1;
+                2'b10: enc2 = 2'd1;
+                2'b11: enc2 = 2'd2;
+            endcase
+        end
+    endfunction
+
     wire [7:0] synapses;
     wire [1:0] count0;
     wire [1:0] count1;
@@ -86,10 +99,14 @@ module neuron #(
     wire [2:0] count5;
     wire [3:0] count;
     assign synapses = weights & inputs; 
-    assign count0 = synapses[0] + synapses[1];
-    assign count1 = synapses[2] + synapses[3];
-    assign count2 = synapses[4] + synapses[5];
-    assign count3 = synapses[6] + synapses[7];
+    // assign count0 = synapses[0] + synapses[1];
+    // assign count1 = synapses[2] + synapses[3];
+    // assign count2 = synapses[4] + synapses[5];
+    // assign count3 = synapses[6] + synapses[7];
+    assign count0 = enc2(synapses[1:0]);
+    assign count1 = enc2(synapses[3:2]);
+    assign count2 = enc2(synapses[5:4]);
+    assign count3 = enc2(synapses[7:6]);
     assign count4 = count0 + count1;
     assign count5 = count2 + count3;
     assign count  = count4 + count5;
