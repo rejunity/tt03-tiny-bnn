@@ -77,42 +77,58 @@ module neuron #(
     //     axon <= (accumulator > bias);
     // end
 
-    always @(inputs) begin
-        reg [1:0] count0;
-        reg [1:0] count1;
-        reg [1:0] count2;
-        reg [1:0] count3;
-        reg [2:0] count4;
-        reg [2:0] count5;
-        reg [3:0] count;
-        case (weights[1:0] & inputs[1:0])
-            2'b00: count0 = 2'd0;
-            2'b01: count0 = 2'd1;
-            2'b10: count0 = 2'd1;
-            2'b11: count0 = 2'd2;
-        endcase
-        case (weights[3:2] & inputs[3:2])
-            2'b00: count1 = 2'd0;
-            2'b01: count1 = 2'd1;
-            2'b10: count1 = 2'd1;
-            2'b11: count1 = 2'd2;
-        endcase
-        case (weights[5:4] & inputs[5:4])
-            2'b00: count2 = 2'd0;
-            2'b01: count2 = 2'd1;
-            2'b10: count2 = 2'd1;
-            2'b11: count2 = 2'd2;
-        endcase
-        case (weights[7:6] & inputs[7:6])
-            2'b00: count3 = 2'd0;
-            2'b01: count3 = 2'd1;
-            2'b10: count3 = 2'd1;
-            2'b11: count3 = 2'd2;
-        endcase
+    wire [7:0] synapses;
+    wire [1:0] count0;
+    wire [1:0] count1;
+    wire [1:0] count2;
+    wire [1:0] count3;
+    wire [2:0] count4;
+    wire [2:0] count5;
+    wire [3:0] count;
+    assign synapses = weights & inputs; 
+    assign count0 = synapses[0] + synapses[1];
+    assign count1 = synapses[2] + synapses[3];
+    assign count2 = synapses[4] + synapses[5];
+    assign count3 = synapses[6] + synapses[7];
+    assign count4 = count0 + count1;
+    assign count5 = count2 + count3;
+    assign count  = count4 + count5;
 
-        count4 = count0 + count1;
-        count5 = count2 + count3;
-        count = count4 + count5;
+    always @(*) begin
+        // reg [1:0] count0;
+        // reg [1:0] count1;
+        // reg [1:0] count2;
+        // reg [1:0] count3;
+        // reg [2:0] count4;
+        // reg [2:0] count5;
+        // reg [3:0] count;
+        // case (weights[1:0] & inputs[1:0])
+        //     2'b00: count0 = 2'd0;
+        //     2'b01: count0 = 2'd1;
+        //     2'b10: count0 = 2'd1;
+        //     2'b11: count0 = 2'd2;
+        // endcase
+        // case (weights[3:2] & inputs[3:2])
+        //     2'b00: count1 = 2'd0;
+        //     2'b01: count1 = 2'd1;
+        //     2'b10: count1 = 2'd1;
+        //     2'b11: count1 = 2'd2;
+        // endcase
+        // case (weights[5:4] & inputs[5:4])
+        //     2'b00: count2 = 2'd0;
+        //     2'b01: count2 = 2'd1;
+        //     2'b10: count2 = 2'd1;
+        //     2'b11: count2 = 2'd2;
+        // endcase
+        // case (weights[7:6] & inputs[7:6])
+        //     2'b00: count3 = 2'd0;
+        //     2'b01: count3 = 2'd1;
+        //     2'b10: count3 = 2'd1;
+        //     2'b11: count3 = 2'd2;
+        // endcase
+
+        // reg [3:0] count;
+        // count = count4 + count5;
 
         if (USE_CHEAP_BIAS == 1)
             axon <= |(count & bias);
