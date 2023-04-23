@@ -2,8 +2,8 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
 
-TEST = 1
-USE_CHEAP_BIAS = True
+TEST = 4
+USE_CHEAP_BIAS = False # True
 
 def neuron(id, x):
     if USE_CHEAP_BIAS:
@@ -63,6 +63,25 @@ elif TEST == 3: # 2 layers
             h = (h << 1) + neuron(n, x)
         #print("{0:016b}".format(h), int(neuron(HIDDEN_UNITS+id, h)))
         return neuron(HIDDEN_UNITS+id, h)
+
+elif TEST == 4: # 3 layers
+    HIDDEN_UNITS = 8
+    HIDDEN_UNITS2 = 8
+    MAX_TEST_OUTPUTS = 8
+    MAX_NEURON_PARAMS_TO_UPLOAD = 8+8+8
+    weights = [0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80,    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,    0xff, 0xff, 0xff, 0xff, 0x55, 0xAA, 0x0F, 0xC3]
+    bias =    [   0,    0,    0,    0,    0,    0,    0,    0,       0,    7,    0,    7,    0,    7,    0,    7,       0,    1,    2,    7,    3,    3,    3,    3]
+    bits_w =  [   8,    8,    8,    8,    8,    8,    8,    8,       8,    8,    8,    8,    8,    8,    8,    8,       8,    8,    8,    8,    8,    8,    8,    8]
+    bits_b =  [   3,    3,    3,    3,    3,    3,    3,    3,       3,    3,    3,    3,    3,    3,    3,    3,       3,    3,    3,    3,    3,    3,    3,    3]
+    def output(id, x):
+        h = 0
+        h2 = 0
+        for n in reversed(range(HIDDEN_UNITS)):
+            h = (h << 1) + neuron(n, x)
+        for n in reversed(range(HIDDEN_UNITS2)):
+            h2 = (h2 << 1) + neuron(HIDDEN_UNITS+n, h)
+        return neuron(HIDDEN_UNITS+HIDDEN_UNITS2+id, h2)
+
 
 def nth_bit(x, n):
     return (x >> n) & 1
