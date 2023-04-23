@@ -49,18 +49,19 @@ module neuron #(
         end
     end
 
-    wire [INPUTS-1:0] synapses;
-    assign synapses = weights & inputs;
-    popcount #(.INPUTS(8), .COUNTER_BITS(ACCUMULATOR_BITS)) spike_counter(.in(synapses), .count(accumulator));
+    // wire [INPUTS-1:0] synapses;
+    // assign synapses = weights & inputs;
+    // popcount #(.INPUTS(8), .COUNTER_BITS(ACCUMULATOR_BITS)) spike_counter(.in(synapses), .count(accumulator));
 
-    always @(*) begin
-        axon <= (accumulator > bias);
-        // $display("w = ", weights);
-        // $display("i = ", inputs);
-        // $display("s = ", synapses);
-        // $display("b = ", bias);
-        // $display("a = ", accumulator);
-    end
+    // always @(*) begin
+    //     //axon <= (accumulator > bias);
+    //     axon <= |(accumulator & bias);
+    //     // $display("w = ", weights);
+    //     // $display("i = ", inputs);
+    //     // $display("s = ", synapses);
+    //     // $display("b = ", bias);
+    //     // $display("a = ", accumulator);
+    // end
 
     // always @(inputs) begin
     //     // synapses <= weights & inputs;
@@ -74,5 +75,45 @@ module neuron #(
     //     // $display("accumulator value = ", accumulator);
     //     axon <= (accumulator > bias);
     // end
+
+    always @(inputs) begin
+        reg [1:0] count0;
+        reg [1:0] count1;
+        reg [1:0] count2;
+        reg [1:0] count3;
+        reg [2:0] count4;
+        reg [2:0] count5;
+        reg [3:0] count;
+        case (weights[1:0] & inputs[1:0])
+            2'b00: count0 = 2'd0;
+            2'b01: count0 = 2'd1;
+            2'b10: count0 = 2'd1;
+            2'b11: count0 = 2'd2;
+        endcase
+        case (weights[3:2] & inputs[3:2])
+            2'b00: count1 = 2'd0;
+            2'b01: count1 = 2'd1;
+            2'b10: count1 = 2'd1;
+            2'b11: count1 = 2'd2;
+        endcase
+        case (weights[5:4] & inputs[5:4])
+            2'b00: count2 = 2'd0;
+            2'b01: count2 = 2'd1;
+            2'b10: count2 = 2'd1;
+            2'b11: count2 = 2'd2;
+        endcase
+        case (weights[7:6] & inputs[7:6])
+            2'b00: count3 = 2'd0;
+            2'b01: count3 = 2'd1;
+            2'b10: count3 = 2'd1;
+            2'b11: count3 = 2'd2;
+        endcase
+
+        count4 = count0 + count1;
+        count5 = count2 + count3;
+        count = count4 + count5;
+
+        axon <= (count > bias);
+    end
 
 endmodule
