@@ -11,7 +11,8 @@ module tiny_bnn (
     wire clk = io_in[0];
     wire setup = io_in[1];
     wire param_in = io_in[2];
-    wire [5:0] x = io_in[7:2];
+    wire x_bank_hi = io_in[3];
+    wire [3:0] x = io_in[7:4];
 
     // wire led_out;
     // wire param_out;
@@ -35,7 +36,10 @@ module tiny_bnn (
         if (setup) begin
             global_input <= 0;
         end else begin
-            global_input[5:0] <= x;
+            if (x_bank_hi)
+                global_input[7:4] <= x;
+            else
+                global_input[3:0] <= x;
         end
 
         //$monitor("h %b", hidden);

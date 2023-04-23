@@ -10,6 +10,8 @@ module tb (
     // testbench is controlled by test.py
     input clk,
     input setup,
+    input param_in,
+    input x_bank_hi,
     input wire [7:0] x,
     output wire [7:0] out
    );
@@ -22,7 +24,7 @@ module tb (
     end
 
     // wire up the inputs and outputs
-    wire [7:0] inputs = {x[5:0], setup, clk}; //{6'b0, rst, clk};
+    wire [7:0] inputs = {x_bank_hi ? x[7:4] : x[3:0], x_bank_hi, param_in, setup, clk};
     wire [7:0] outputs;
     assign out = outputs;
 
