@@ -23,8 +23,8 @@ module tiny_bnn (
 
 
     reg [7:0] global_input;
-    wire [7:0] param_chain;
-    wire [7:0] global_output;
+    wire [15:0] param_chain;
+    wire [15:0] global_output;
     
     always @(posedge clk) begin
         // during setup, reset global inputs to 0
@@ -51,15 +51,16 @@ module tiny_bnn (
 
     genvar i;
     generate
-        for (i = 0; i < 8; i = i + 1) begin
+        for (i = 0; i < 16; i = i + 1) begin
             wire p = (i == 0) ? param_in : param_chain[i - 1];
 
             neuron input_layer (
                 .clk(clk), .setup(setup), .param_in(p), .param_out(param_chain[i]),
-                //.inputs(global_input), .axon(io_out[i]));
                 .inputs(global_input), .axon(global_output[i]));
+        end
 
-            assign io_out[i] = (setup) ? param_chain[7] : global_output[i];
+        for (i = 0; i < 8; i = i + 1) begin
+            assign io_out[i] = (setup && i == 7) ? param_chain[7] : global_output[i] | global_output[8+i];
         end
     endgenerate
 endmodule
