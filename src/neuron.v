@@ -10,7 +10,7 @@ module neuron #(
     output param_out,
 
     input wire [INPUTS-1:0] inputs,
-    output axon
+    output reg axon
 );
 
     localparam ACCUMULATOR_BITS = $clog2(INPUTS) + 1;
@@ -18,7 +18,7 @@ module neuron #(
     reg [INPUTS-1:0] weights;
     reg [BIAS_BITS-1:0] bias;
 
-    //reg [ACCUMULATOR_BITS-1:0] accumulator;
+    reg [ACCUMULATOR_BITS-1:0] accumulator;
     integer i;
 
     // initial begin
@@ -83,21 +83,21 @@ module neuron #(
     //     // $display("a = ", accumulator);
     // end
 
-    // always @(inputs) begin
-    //     // synapses <= weights & inputs;
-    //     // $display("w = ", weights);
-    //     // $display("b = ", bias);
-    //     // $display("i = ", inputs);
-    //     // $display("t = ", synapses);
-    //     accumulator = 0;
-    //     for  (i = 0; i < INPUTS; i = i + 1)
-    //         accumulator = accumulator + (weights[i] & inputs[i]);
-    //     // $display("accumulator value = ", accumulator);
-    //     if (USE_CHEAP_BIAS == 1)
-    //         axon <= |(accumulator & bias);
-    //     else
-    //         axon <= (accumulator > bias);
-    // end
+    always @(inputs) begin
+        // synapses <= weights & inputs;
+        // $display("w = ", weights);
+        // $display("b = ", bias);
+        // $display("i = ", inputs);
+        // $display("t = ", synapses);
+        accumulator = 0;
+        for  (i = 0; i < INPUTS; i = i + 1)
+            accumulator = accumulator + (weights[i] & inputs[i]);
+        // $display("accumulator value = ", accumulator);
+        if (USE_CHEAP_BIAS == 1)
+            axon = |(accumulator & bias);
+        else
+            axon = (accumulator > bias);
+    end
 
     function [1:0] enc2;
         input [1:0] in;
@@ -132,8 +132,8 @@ module neuron #(
     // assign count5 = count2 + count3;
     // assign count = count4 + count5;
     // assign axon = count > bias;
-    //assign axon = (synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) > bias;
-    assign axon = ((synapses[7]+synapses[6])+(synapses[5]+synapses[4]))+((synapses[3]+synapses[2])+(synapses[1]+synapses[0])) > bias;
+    // assign axon = (synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) > bias;
+    // assign axon = ((synapses[7]+synapses[6])+(synapses[5]+synapses[4]))+((synapses[3]+synapses[2])+(synapses[1]+synapses[0])) > bias;
 
     // reg [7:0] synapses;
     // reg [1:0] count0;
