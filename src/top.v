@@ -126,13 +126,13 @@ module tiny_bnn (
             end
         end
 
-        for (i = 0; i < GLOBAL_OUTPUTS; i = i + 1) begin
-            assign io_out[i] = (setup && i == GLOBAL_OUTPUTS - 1) ? param_chain[HIDDEN_UNITS+HIDDEN_UNITS2+GLOBAL_OUTPUTS-1] : global_output[i];
-        end
-
         // for (i = 0; i < GLOBAL_OUTPUTS; i = i + 1) begin
-        //     assign io_out[i] = global_output[i];
+        //     assign io_out[i] = (setup && i == GLOBAL_OUTPUTS - 1) ? param_chain[HIDDEN_UNITS+HIDDEN_UNITS2+GLOBAL_OUTPUTS-1] : global_output[i];
         // end
+
+        for (i = 0; i < GLOBAL_OUTPUTS; i = i + 1) begin
+            assign io_out[i] = global_output[i];
+        end
 
         // for (i = 0; i < 8; i = i + 1) begin
         //     assign io_out[i] = (setup && i == 7) ? param_chain[7] : global_output[i] | global_output[8+i];
