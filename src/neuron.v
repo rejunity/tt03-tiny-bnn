@@ -5,9 +5,9 @@ module neuron #(
     parameter USE_CHEAP_BIAS = 0
 ) (
     input clk,
-    input wire setup,
-    input wire param_in,
-    output wire param_out,
+    input setup,
+    input param_in,
+    output param_out,
 
     input wire [INPUTS-1:0] inputs,
     output reg axon
@@ -22,8 +22,8 @@ module neuron #(
     integer i;
 
     // initial begin
-    //     weights = 8'hFF;
-    //     bias = 3;
+    //     weights = {INPUTS{1'bx}};
+    //     bias = {BIAS_BITS{1'bx}};
     // end
 
     // initial begin
@@ -39,11 +39,15 @@ module neuron #(
 
     assign param_out = bias[BIAS_BITS-1];
 
-    always @(posedge clk) begin
-        // if reset, set counter to 0
+    always_ff @(posedge clk) begin
+        // load weights & bias in the setup phase
         if (setup) begin
-            bias = {bias[BIAS_BITS-2:0], weights[INPUTS-1]};
-            weights = {weights[INPUTS-2:0], param_in};
+            //bias <= {bias[BIAS_BITS-2:0], weights[INPUTS-1]};
+            //weights <= {weights[INPUTS-2:0], param_in};
+            bias <= bias << 1;
+            bias[0] <= weights[INPUTS-1];
+            weights <= weights << 1;
+            weights[0] <= param_in;
             // $display(">> ", param_in);
             // $display("w = ", weights);
             // $display("b = ", bias);
