@@ -104,6 +104,15 @@ async def test_tiny_dnn(dut):
     #         dut.x.value = nth_bit(bias[n], 0);
     #         await ClockCycles(dut.clk, 1)
 
+    # flush all parameters with 0s first
+    for n in reversed(range(len(weights))):
+        for i in reversed(range(bits_b[n])):
+            dut.param_in.value = 0;
+            await ClockCycles(dut.clk, 1)
+        for i in reversed(range(bits_w[n])):
+            dut.param_in.value = 0;
+            await ClockCycles(dut.clk, 1)
+
     for n in reversed(range(min(MAX_NEURON_PARAMS_TO_UPLOAD, len(weights)))):
         for i in reversed(range(bits_b[n])):
             dut.param_in.value = nth_bit(bias[n], i);
