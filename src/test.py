@@ -15,7 +15,7 @@ if TEST == 0: # 1 layer
     MAX_TEST_OUTPUTS = 8
     MAX_NEURON_PARAMS_TO_UPLOAD = 8
     weights = [0xff, 0xff, 0xff, 0xff, 0x55, 0xAA, 0x0F, 0xFF] # 0xC3
-    bias =    [   0,    1,    2,    7,    3,    3,    3,    3]
+    bias =    [   3,    1,    2,    7,    3,    3,    3,    3] # [   0,    1,    2,    7,    3,    3,    3,    3]
     bits_w =  [   8,    8,    8,    8,    8,    8,    8,    8]
     bits_b =  [   3,    3,    3,    3,    3,    3,    3,    3]
     def output(id, x): return neuron(id, x)
