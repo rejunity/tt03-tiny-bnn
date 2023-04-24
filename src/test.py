@@ -2,7 +2,7 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
 
-TEST = 1
+TEST = 2
 USE_CHEAP_BIAS = False # True
 
 def neuron(id, x):
@@ -20,7 +20,7 @@ if TEST == 0: # 1 layer
     bits_b =  [   3,    3,    3,    3,    3,    3,    3,    3]
     def output(id, x): return neuron(id, x)
 
-elif TEST == 1: # 2 layers
+elif TEST == 1: # 2 layers @ 8 hidden units
     HIDDEN_UNITS = 8
     MAX_TEST_OUTPUTS = 8
     MAX_NEURON_PARAMS_TO_UPLOAD = 8+8
@@ -34,7 +34,22 @@ elif TEST == 1: # 2 layers
             h = (h << 1) + neuron(n, x)
         return neuron(HIDDEN_UNITS+id, h)
 
-elif TEST == 2: # 2 layers
+elif TEST == 2: # 2 layers @ 10 hidden units
+    HIDDEN_UNITS = 10
+    MAX_TEST_OUTPUTS = 8
+    MAX_NEURON_PARAMS_TO_UPLOAD = 10+8
+    weights = [0xff,0xff,0xff,0xff,0x55,0xAA,0x0F,0xC3,0xff,0xff,     0xfff,0xfff,0xfff,0xfff,0xfff,0xfff,0xfff,0xfff]
+    bias =    [   0,   1,   2,   7,   3,   3,   3,   3,   3,   4,         0,    1,    2,    3,    4,    5,    6,    7]
+    bits_w =  [   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,        10,   10,   10,   10,   10,   10,   10,   10]
+    bits_b =  [   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,         3,    3,    3,    3,    3,    3,    3,    3]
+    def output(id, x):
+        h = 0
+        for n in reversed(range(HIDDEN_UNITS)):
+            h = (h << 1) + neuron(n, x)
+        #print("{0:016b}".format(h), int(neuron(HIDDEN_UNITS+id, h)))
+        return neuron(HIDDEN_UNITS+id, h)
+
+elif TEST == 3: # 2 layers @ 12 hidden units
     HIDDEN_UNITS = 12
     MAX_TEST_OUTPUTS = 8
     MAX_NEURON_PARAMS_TO_UPLOAD = 12+8
@@ -49,7 +64,7 @@ elif TEST == 2: # 2 layers
         #print("{0:016b}".format(h), int(neuron(HIDDEN_UNITS+id, h)))
         return neuron(HIDDEN_UNITS+id, h)
 
-elif TEST == 3: # 2 layers
+elif TEST == 4: # 2 layers @ 16 hidden units
     HIDDEN_UNITS = 16
     MAX_TEST_OUTPUTS = 8
     MAX_NEURON_PARAMS_TO_UPLOAD = 16+8
@@ -64,7 +79,7 @@ elif TEST == 3: # 2 layers
         #print("{0:016b}".format(h), int(neuron(HIDDEN_UNITS+id, h)))
         return neuron(HIDDEN_UNITS+id, h)
 
-elif TEST == 4: # 3 layers
+elif TEST == 5: # 3 layers
     HIDDEN_UNITS = 8
     HIDDEN_UNITS2 = 8
     MAX_TEST_OUTPUTS = 8
