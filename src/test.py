@@ -92,26 +92,19 @@ async def test_tiny_dnn(dut):
     clock = Clock(dut.clk, 10, units="us")
     cocotb.start_soon(clock.start())
 
-    # dut.setup.value = 0
-    # dut.x.value = 0;
-    # await ClockCycles(dut.clk, 10)
-
     dut._log.info("setup")
     dut.setup.value = 1
 
-    # for n in reversed(range(8)):
-    #     for i in reversed(range(3 + 8)):
-    #         dut.x.value = nth_bit(bias[n], 0);
-    #         await ClockCycles(dut.clk, 1)
-
+    dut.param_in.value = 0;
+    await ClockCycles(dut.clk, 1)
     # flush all parameters with 0s first
-    for n in reversed(range(len(weights))):
-        for i in reversed(range(bits_b[n])):
-            dut.param_in.value = 0;
-            await ClockCycles(dut.clk, 1)
-        for i in reversed(range(bits_w[n])):
-            dut.param_in.value = 0;
-            await ClockCycles(dut.clk, 1)
+    # for n in reversed(range(len(weights))):
+    #     for i in reversed(range(bits_b[n])):
+    #         dut.param_in.value = 0;
+    #         await ClockCycles(dut.clk, 1)
+    #     for i in reversed(range(bits_w[n])):
+    #         dut.param_in.value = 0;
+    #         await ClockCycles(dut.clk, 1)
 
     for n in reversed(range(min(MAX_NEURON_PARAMS_TO_UPLOAD, len(weights)))):
         for i in reversed(range(bits_b[n])):
