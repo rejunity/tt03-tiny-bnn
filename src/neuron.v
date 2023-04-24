@@ -132,8 +132,8 @@ module neuron #(
     // assign count5 = count2 + count3;
     // assign count = count4 + count5;
     // assign axon = count > bias;
-    assign axon = (synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) > bias;
-    //assign axon = ((synapses[7]+synapses[6])+(synapses[5]+synapses[4]))+((synapses[3]+synapses[2])+(synapses[1]+synapses[0])) > bias;
+    //assign axon = (synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) > bias;
+    assign axon = ((synapses[7]+synapses[6])+(synapses[5]+synapses[4]))+((synapses[3]+synapses[2])+(synapses[1]+synapses[0])) > bias;
 
     // reg [7:0] synapses;
     // reg [1:0] count0;
