@@ -24,7 +24,7 @@ module tb (
     end
 
     // wire up the inputs and outputs
-    wire [7:0] inputs = {x_bank_hi ? x[7:4] : x[3:0], x_bank_hi, param_in, setup, clk};
+    wire [7:0] inputs = {(x_bank_hi ? x[7:4] : x[3:0]), x_bank_hi, param_in, setup, clk};
     wire [7:0] outputs;
     assign out = outputs;
 
@@ -37,15 +37,5 @@ module tb (
         .io_in  (inputs),
         .io_out (outputs)
         );
-
-    // instantiate the DUT
-    // seven_segment_seconds seven_segment_seconds(
-    //     `ifdef GL_TEST
-    //         .vccd1( 1'b1),
-    //         .vssd1( 1'b0),
-    //     `endif
-    //     .io_in  (inputs),
-    //     .io_out (outputs)
-    //     );
 
 endmodule
