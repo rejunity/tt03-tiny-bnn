@@ -15,7 +15,7 @@ if TEST == 0: # 1 layer
     MAX_TEST_OUTPUTS = 8
     MAX_NEURON_PARAMS_TO_UPLOAD = 8
     weights = [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff] # [0xff, 0xff, 0xff, 0xff, 0x55, 0xAA, 0x0F, 0xC3]
-    bias =    [   3,    3,    3,    3,    3,    3,    3,    3] # [   0,    1,    2,    7,    3,    3,    3,    3]
+    bias =    [   3,    3,    3,    3,    3,    3,    3,    7] # [   0,    1,    2,    7,    3,    3,    3,    3]
     bits_w =  [   8,    8,    8,    8,    8,    8,    8,    8]
     bits_b =  [   3,    3,    3,    3,    3,    3,    3,    3]
     def output(id, x): return neuron(id, x)
@@ -113,20 +113,6 @@ async def test_tiny_dnn(dut):
         for i in reversed(range(bits_w[n])):
             dut.param_in.value = nth_bit(weights[n], i);
             await ClockCycles(dut.clk, 1)
-
-    # dut.x.value = 0;
-    # await ClockCycles(dut.clk, 1)
-    # dut.x.value = 1;
-    # await ClockCycles(dut.clk, 2)
-    # dut.x.value = 1;
-    # await ClockCycles(dut.clk, 8)
-
-    # dut.x.value = 0;
-    # await ClockCycles(dut.clk, 2)
-    # dut.x.value = 1;
-    # await ClockCycles(dut.clk, 1)
-    # dut.x.value = 1;
-    # await ClockCycles(dut.clk, 8)
 
     dut.setup.value = 0
     await ClockCycles(dut.clk, 10)
