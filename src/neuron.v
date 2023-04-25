@@ -2,7 +2,7 @@
 module neuron #(
     parameter INPUTS = 8,
     parameter BIAS_BITS = 3,
-    parameter USE_CHEAP_BIAS = 0
+    parameter USE_CHEAP_BIAS = 1
 ) (
     input clk,
     input setup,
@@ -40,6 +40,10 @@ module neuron #(
     assign synapses = weights & inputs;
     //popcount #(.INPUTS(INPUTS), .COUNTER_BITS(ACCUMULATOR_BITS)) spike_counter(.in(synapses), .count(accumulator));
     //assign axon = accumulator > bias;
-    assign axon = (synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) > bias;
+    if (USE_CHEAP_BIAS) begin
+        assign axon = |((synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) & bias);
+    end else begin
+        assign axon = (synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) > bias;
+    end
 
 endmodule

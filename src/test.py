@@ -3,7 +3,7 @@ from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
 
 TEST = 1
-USE_CHEAP_BIAS = False # True
+USE_CHEAP_BIAS = True
 
 def neuron(id, x):
     if USE_CHEAP_BIAS:
