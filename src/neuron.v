@@ -18,7 +18,7 @@ module neuron #(
     reg [INPUTS-1:0] weights;
     reg [BIAS_BITS-1:0] bias;
 
-    reg [ACCUMULATOR_BITS-1:0] accumulator;
+    //reg [ACCUMULATOR_BITS-1:0] accumulator;
     integer i;
 
     assign param_out = bias[BIAS_BITS-1];
@@ -38,7 +38,8 @@ module neuron #(
 
     wire [INPUTS-1:0] synapses;
     assign synapses = weights & inputs;
-    popcount #(.INPUTS(INPUTS), .COUNTER_BITS(ACCUMULATOR_BITS)) spike_counter(.in(synapses), .count(accumulator));
-    assign axon = accumulator > bias;
+    //popcount #(.INPUTS(INPUTS), .COUNTER_BITS(ACCUMULATOR_BITS)) spike_counter(.in(synapses), .count(accumulator));
+    //assign axon = accumulator > bias;
+    assign axon = (synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) > bias;
 
 endmodule
