@@ -6,7 +6,7 @@ module tiny_bnn (
 );
     localparam GLOBAL_INPUTS = 8;
     localparam GLOBAL_OUTPUTS = 8;
-    localparam HIDDEN_UNITS = 10;
+    localparam HIDDEN_UNITS = 8;
     localparam HIDDEN_UNITS2 = 0;
     
     wire clk = io_in[0];

@@ -13,7 +13,7 @@ module neuron #(
     output axon
 );
 
-    localparam ACCUMULATOR_BITS = $clog2(INPUTS) + 1;
+    localparam ACCUMULATOR_BITS = $clog2(INPUTS); // + 1
 
     reg [INPUTS-1:0] weights;
     reg [BIAS_BITS-1:0] bias;
