@@ -31,23 +31,31 @@ module neuron #(
         end
     end
 
-    localparam ACCUMULATOR_BITS = $clog2(INPUTS) + 1;
-    reg [ACCUMULATOR_BITS-1:0] accumulator;
-    integer i;
+    // localparam ACCUMULATOR_BITS = $clog2(INPUTS) + 1;
+    // reg [ACCUMULATOR_BITS-1:0] accumulator;
+    // integer i;
+    reg [INPUTS-1:0] synapses;
     always @(inputs) begin
         // synapses <= weights & inputs;
         // $display("w = ", weights);
         // $display("b = ", bias);
         // $display("i = ", inputs);
         // $display("t = ", synapses);
-        accumulator = 0;
-        for  (i = 0; i < INPUTS; i = i + 1)
-            accumulator = accumulator + (weights[i] & inputs[i]);
-        // $display("accumulator value = ", accumulator);
-        if (USE_CHEAP_BIAS == 1)
-            axon <= |(accumulator & bias);
-        else
-            axon <= (accumulator > bias);
+        // accumulator = 0;
+        // for  (i = 0; i < INPUTS; i = i + 1)
+        //     accumulator = accumulator + (weights[i] & inputs[i]);
+        // // $display("accumulator value = ", accumulator);
+        // if (USE_CHEAP_BIAS == 1)
+        //     axon <= |(accumulator & bias);
+        // else
+        //     axon <= (accumulator > bias);
+
+        synapses = weights & inputs;
+        if (USE_CHEAP_BIAS == 1) begin
+            axon = |((synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) & bias);
+        end else begin
+            axon = (synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) > bias;
+        end
     end
 
     // wire [INPUTS-1:0] synapses;
