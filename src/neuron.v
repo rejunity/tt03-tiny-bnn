@@ -35,7 +35,7 @@ module neuron #(
     // reg [ACCUMULATOR_BITS-1:0] accumulator;
     // integer i;
     // reg [INPUTS-1:0] synapses;
-    always @(*) begin
+    always @(spike) begin
         // synapses <= weights & inputs;
         // $display("w = ", weights);
         // $display("b = ", bias);
@@ -50,16 +50,24 @@ module neuron #(
         // else
         //     axon <= (accumulator > bias);
 
-        // synapses = weights & inputs;
-        if (USE_CHEAP_BIAS == 1) begin
-            axon = |((synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) & bias);
-        end else begin
-            axon = (synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) > bias;
-        end
+        // // synapses = weights & inputs;
+        // if (USE_CHEAP_BIAS == 1) begin
+        //     axon = |((synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) & bias);
+        // end else begin
+        //     axon = (synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) > bias;
+        // end
+        axon = spike;
     end
 
     wire [INPUTS-1:0] synapses;
     assign synapses = weights & inputs;
+    wire spike;
+    if (USE_CHEAP_BIAS == 1) begin
+        assign spike = |((synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) & bias);
+    end else begin
+        assign spike = (synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) > bias;
+    end
+
     // // reg [ACCUMULATOR_BITS-1:0] accumulator;
     // // popcount #(.INPUTS(INPUTS), .COUNTER_BITS(ACCUMULATOR_BITS)) spike_counter(.in(synapses), .count(accumulator));
     // // if (USE_CHEAP_BIAS) begin
