@@ -28,6 +28,8 @@ module neuron #(
             // $display(">> ", param_in);
             // $display("w = ", weights);
             // $display("b = ", bias);
+        end else begin
+            axon <= spike;
         end
     end
 
@@ -35,29 +37,28 @@ module neuron #(
     // reg [ACCUMULATOR_BITS-1:0] accumulator;
     // integer i;
     // reg [INPUTS-1:0] synapses;
-    always @(spike) begin
-        // synapses <= weights & inputs;
-        // $display("w = ", weights);
-        // $display("b = ", bias);
-        // $display("i = ", inputs);
-        // $display("t = ", synapses);
-        // accumulator = 0;
-        // for  (i = 0; i < INPUTS; i = i + 1)
-        //     accumulator = accumulator + (weights[i] & inputs[i]);
-        // // $display("accumulator value = ", accumulator);
-        // if (USE_CHEAP_BIAS == 1)
-        //     axon <= |(accumulator & bias);
-        // else
-        //     axon <= (accumulator > bias);
+    // always @(*) begin
+    //     // synapses <= weights & inputs;
+    //     // $display("w = ", weights);
+    //     // $display("b = ", bias);
+    //     // $display("i = ", inputs);
+    //     // $display("t = ", synapses);
+    //     // accumulator = 0;
+    //     // for  (i = 0; i < INPUTS; i = i + 1)
+    //     //     accumulator = accumulator + (weights[i] & inputs[i]);
+    //     // // $display("accumulator value = ", accumulator);
+    //     // if (USE_CHEAP_BIAS == 1)
+    //     //     axon <= |(accumulator & bias);
+    //     // else
+    //     //     axon <= (accumulator > bias);
 
-        // // synapses = weights & inputs;
-        // if (USE_CHEAP_BIAS == 1) begin
-        //     axon = |((synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) & bias);
-        // end else begin
-        //     axon = (synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) > bias;
-        // end
-        axon = spike;
-    end
+    //     // synapses = weights & inputs;
+    //     if (USE_CHEAP_BIAS == 1) begin
+    //         axon = |((synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) & bias);
+    //     end else begin
+    //         axon = (synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) > bias;
+    //     end
+    // end
 
     wire [INPUTS-1:0] synapses;
     assign synapses = weights & inputs;
