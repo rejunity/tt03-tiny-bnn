@@ -2,7 +2,7 @@
 module neuron #(
     parameter INPUTS = 8,
     parameter BIAS_BITS = 3,
-    parameter USE_CHEAP_BIAS = 1
+    parameter USE_CHEAP_BIAS = 0
 ) (
     input clk,
     input setup,
