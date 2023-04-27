@@ -28,8 +28,8 @@ module neuron #(
             // $display(">> ", param_in);
             // $display("w = ", weights);
             // $display("b = ", bias);
-        end else begin
-            axon <= spike;
+        // end else begin
+        //     axon <= spike;
         end
     end
 
@@ -60,22 +60,27 @@ module neuron #(
     //     end
     // end
 
+    // wire [INPUTS-1:0] synapses;
+    // assign synapses = weights & inputs;
+    // wire spike;
+    // if (USE_CHEAP_BIAS == 1) begin
+    //     assign spike = |((synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) & bias);
+    // end else begin
+    //     assign spike = (synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) > bias;
+    // end
+
+    localparam ACCUMULATOR_BITS = $clog2(INPUTS) + 1;
+    reg [ACCUMULATOR_BITS-1:0] accumulator;
     wire [INPUTS-1:0] synapses;
     assign synapses = weights & inputs;
-    wire spike;
-    if (USE_CHEAP_BIAS == 1) begin
-        assign spike = |((synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) & bias);
-    end else begin
-        assign spike = (synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) > bias;
-    end
+    popcount_and_threshold #(.INPUTS(INPUTS), .THRESHOLD_BITS(BIAS_BITS)) spike_counter(.in(synapses), .threshold(bias), .out(axon));
 
-    // // reg [ACCUMULATOR_BITS-1:0] accumulator;
-    // // popcount #(.INPUTS(INPUTS), .COUNTER_BITS(ACCUMULATOR_BITS)) spike_counter(.in(synapses), .count(accumulator));
-    // // if (USE_CHEAP_BIAS) begin
-    // //     assign axon = accumulator > bias;
-    // // end else begin
-    // //     assign axon = |(accumulator & bias)
-    // // end
+    //popcount #(.INPUTS(INPUTS), .COUNTER_BITS(ACCUMULATOR_BITS)) spike_counter(.in(synapses), .count(accumulator));
+    // if (USE_CHEAP_BIAS == 1) begin
+    //     assign axon = |(accumulator & bias);
+    // end else begin
+    //     assign axon = accumulator > bias;
+    // end
     // if (USE_CHEAP_BIAS) begin
     //     assign axon = |((synapses[7]+synapses[6]+synapses[5]+synapses[4]+synapses[3]+synapses[2]+synapses[1]+synapses[0]) & bias);
     // end else begin
